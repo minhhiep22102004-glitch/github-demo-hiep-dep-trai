@@ -1,135 +1,164 @@
-
-// =============================
-// 1. let, const
-// =============================
-let age = 22;
-const PI = 3.14;
-console.log("Age:", age, "PI:", PI);
-
-// =============================
-// 2. Arrow function
-// =============================
-const sum = (a, b) => a + b;
-console.log("Sum(3,4):", sum(3, 4));
-
-// =============================
-// 3. Template literals
-// =============================
-let name = "Hiep";
-console.log(`Xin chào, ${name}! Tuổi của bạn là ${age}`);
-
-// =============================
-// 4. Destructuring
-// =============================
-const person = { name: "Hiep", age: 22, country: "VN" };
-const { name: personName, age: personAge } = person;
-console.log("Destructured:", personName, personAge);
-
-const arr = [10, 20, 30];
-const [first, , third] = arr;
-console.log("Array destructuring:", first, third);
-
-// =============================
-// 5. Spread & Rest
-// =============================
-const arr1 = [1, 2];
-const arr2 = [...arr1, 3, 4];
-console.log("Spread array:", arr2);
-
-function total(...numbers) {
-  return numbers.reduce((a, b) => a + b, 0);
-}
-console.log("Rest total:", total(1, 2, 3, 4, 5));
-
-// =============================
-// 6. Class
-// =============================
-class Person {
-  constructor(name) {
-    this.name = name;
+import React, {
+    useState,
+    useEffect,
+    useContext,
+    createContext,
+    useRef,
+    useReducer,
+    useMemo,
+    useCallback,
+  } from "react";
+  
+  // =============================
+  // 1. useState
+  // =============================
+  function Counter() {
+    const [count, setCount] = useState(0);
+    return (
+      <div style={{ border: "1px solid gray", padding: "10px", margin: "10px" }}>
+        <h3>useState</h3>
+        <p>Bạn đã bấm {count} lần</p>
+        <button onClick={() => setCount(count + 1)}>Tăng</button>
+      </div>
+    );
   }
-  sayHi() {
-    console.log(`Hi, I'm ${this.name}`);
+  
+  // =============================
+  // 2. useEffect
+  // =============================
+  function Timer() {
+    const [seconds, setSeconds] = useState(0);
+    useEffect(() => {
+      const interval = setInterval(() => setSeconds(s => s + 1), 1000);
+      return () => clearInterval(interval); // cleanup
+    }, []);
+    return (
+      <div style={{ border: "1px solid gray", padding: "10px", margin: "10px" }}>
+        <h3>useEffect</h3>
+        <p>Đã trôi qua {seconds} giây</p>
+      </div>
+    );
   }
-}
-const p1 = new Person("Hiep");
-p1.sayHi();
-
-// =============================
-// 7. Default parameter
-// =============================
-function greet(user = "Guest") {
-  console.log(`Hello, ${user}`);
-}
-greet();
-greet("Hiep");
-
-// =============================
-// 8. for...of loop
-// =============================
-for (let num of [1, 2, 3]) {
-  console.log("For...of:", num);
-}
-
-// =============================
-// 9. Map & Set
-// =============================
-const myMap = new Map();
-myMap.set("name", "Hiep");
-myMap.set("age", 22);
-console.log("Map get name:", myMap.get("name"));
-
-const mySet = new Set([1, 2, 2, 3]);
-console.log("Set:", [...mySet]);
-
-// =============================
-// 10. Promise & Async/Await
-// =============================
-const fakeApi = (ok = true) =>
-  new Promise((resolve, reject) =>
-    setTimeout(() => (ok ? resolve("Data loaded") : reject("Error")), 1000)
-  );
-
-async function loadData() {
-  try {
-    const res = await fakeApi();
-    console.log("Async/Await:", res);
-  } catch (err) {
-    console.log("Error:", err);
+  
+  // =============================
+  // 3. useContext
+  // =============================
+  const UserContext = createContext();
+  
+  function Child() {
+    const user = useContext(UserContext);
+    return <p>Xin chào, {user}</p>;
   }
-}
-loadData();
-
-// =============================
-// 11. Optional chaining & Nullish Coalescing
-// =============================
-const user = {};
-console.log("Optional chaining:", user?.profile?.name ?? "Guest");
-
-// =============================
-// 12. Logical assignment operators (ES12)
-// =============================
-let username = "";
-username ||= "DefaultUser"; // gán khi falsy
-console.log("Logical OR assignment:", username);
-
-let score = 0;
-score ??= 100; // gán khi null hoặc undefined
-console.log("Logical NULLISH assignment:", score);
-
-// =============================
-// 13. BigInt (ES11)
-// =============================
-const bigNum = 1234567890123456789012345678901234567890n;
-console.log("BigInt:", bigNum);
-
-// =============================
-// 14. Dynamic import (chạy trong môi trường hỗ trợ ESM)
-// =============================
-// import('./module.js').then(m => console.log(m));
-
-// =============================
-// END DEMO
-// =============================
-
-
+  
+  function ContextDemo() {
+    return (
+      <div style={{ border: "1px solid gray", padding: "10px", margin: "10px" }}>
+        <h3>useContext</h3>
+        <UserContext.Provider value="Hiep">
+          <Child />
+        </UserContext.Provider>
+      </div>
+    );
+  }
+  
+  // =============================
+  // 4. useRef
+  // =============================
+  function FocusInput() {
+    const inputRef = useRef();
+    const handleFocus = () => inputRef.current.focus();
+    return (
+      <div style={{ border: "1px solid gray", padding: "10px", margin: "10px" }}>
+        <h3>useRef</h3>
+        <input ref={inputRef} type="text" placeholder="Nhập gì đó..." />
+        <button onClick={handleFocus}>Focus</button>
+      </div>
+    );
+  }
+  
+  // =============================
+  // 5. useReducer
+  // =============================
+  function reducer(state, action) {
+    switch (action.type) {
+      case "increment": return { count: state.count + 1 };
+      case "decrement": return { count: state.count - 1 };
+      default: return state;
+    }
+  }
+  
+  function ReducerDemo() {
+    const [state, dispatch] = useReducer(reducer, { count: 0 });
+    return (
+      <div style={{ border: "1px solid gray", padding: "10px", margin: "10px" }}>
+        <h3>useReducer</h3>
+        <p>Count: {state.count}</p>
+        <button onClick={() => dispatch({ type: "increment" })}>+</button>
+        <button onClick={() => dispatch({ type: "decrement" })}>-</button>
+      </div>
+    );
+  }
+  
+  // =============================
+  // 6. useMemo & useCallback
+  // =============================
+  function ExpensiveCalculation(num) {
+    console.log("Tính toán lại...");
+    return num * 2;
+  }
+  
+  function MemoCallbackDemo() {
+    const [count, setCount] = useState(0);
+    const result = useMemo(() => ExpensiveCalculation(count), [count]);
+    const handleClick = useCallback(() => setCount(c => c + 1), []);
+  
+    return (
+      <div style={{ border: "1px solid gray", padding: "10px", margin: "10px" }}>
+        <h3>useMemo & useCallback</h3>
+        <p>Kết quả: {result}</p>
+        <button onClick={handleClick}>Tăng</button>
+      </div>
+    );
+  }
+  
+  // =============================
+  // 7. Custom Hook
+  // =============================
+  function useWindowWidth() {
+    const [width, setWidth] = useState(window.innerWidth);
+    useEffect(() => {
+      const handleResize = () => setWidth(window.innerWidth);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+    return width;
+  }
+  
+  function CustomHookDemo() {
+    const width = useWindowWidth();
+    return (
+      <div style={{ border: "1px solid gray", padding: "10px", margin: "10px" }}>
+        <h3>Custom Hook</h3>
+        <p>Chiều rộng cửa sổ: {width}px</p>
+      </div>
+    );
+  }
+  
+  // =============================
+  // APP
+  // =============================
+  export default function App() {
+    return (
+      <div style={{ padding: "20px" }}>
+        <h1>React Hook Demo</h1>
+        <Counter />
+        <Timer />
+        <ContextDemo />
+        <FocusInput />
+        <ReducerDemo />
+        <MemoCallbackDemo />
+        <CustomHookDemo />
+      </div>
+    );
+  }
+  
