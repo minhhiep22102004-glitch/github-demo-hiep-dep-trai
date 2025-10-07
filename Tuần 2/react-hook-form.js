@@ -1,30 +1,52 @@
+import React from 'react';
 import { useForm } from 'react-hook-form';
 
-function ExampleForm() {
-  // 1. Khởi tạo form
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+function RegistrationForm() {
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
-  // 2. Hàm xử lý khi form hợp lệ
   const onSubmit = (data) => {
-    console.log(data); // 'data' chứa giá trị của tất cả các trường input đã đăng ký
+    // Gửi dữ liệu đến server hoặc xử lý logic tại đây
+    console.log("Dữ liệu form hợp lệ:", data);
+    alert(JSON.stringify(data));
   };
 
   return (
-    // 3. Sử dụng handleSubmit để bọc hàm onSubmit
     <form onSubmit={handleSubmit(onSubmit)}>
-      {/* Đăng ký input 'firstName' và áp dụng rule validation */}
-      <input
-        {...register('firstName', { required: 'Tên không được để trống' })}
-        placeholder="Tên"
-      />
-      {/* Hiển thị lỗi */}
-      {errors.firstName && <p style={{ color: 'red' }}>{errors.firstName.message}</p>}
+      {/* Trường Email */}
+      <div>
+        <label>Email</label>
+        <input
+          type="email"
+          {...register("email", {
+            required: "Email là bắt buộc",
+            pattern: {
+              value: /^\S+@\S+$/i,
+              message: "Định dạng email không hợp lệ"
+            }
+          })}
+        />
+        {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
+      </div>
 
-      <input type="submit" />
+      {/* Trường Mật khẩu */}
+      <div>
+        <label>Mật khẩu</label>
+        <input
+          type="password"
+          {...register("password", {
+            required: "Mật khẩu là bắt buộc",
+            minLength: {
+              value: 6,
+              message: "Mật khẩu phải có ít nhất 6 ký tự"
+            }
+          })}
+        />
+        {errors.password && <p style={{ color: 'red' }}>{errors.password.message}</p>}
+      </div>
+
+      <button type="submit">Đăng ký</button>
     </form>
   );
 }
+
+export default RegistrationForm;
