@@ -1,5 +1,5 @@
 import { getGreeting } from './greeting.js';
-import './style.css'; // Webpack sẽ thấy import này và dùng loader
+import './style.css'; // Import CSS để Webpack xử lý
 
 function component() {
   const element = document.getElementById('root');

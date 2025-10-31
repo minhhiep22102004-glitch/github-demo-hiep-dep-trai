@@ -1,0 +1,5 @@
+# Bỏ qua các gói đã cài đặt
+node_modules/
+
+# Bỏ qua thư mục build (vì nó được tạo tự động)
+dist/
